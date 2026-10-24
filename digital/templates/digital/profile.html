@@ -1,0 +1,161 @@
+{% extends 'base.html' %} 
+{% load static price_filters %}
+{% load static %}
+ {% block title %}Личный кабинет —
+Digitalstore{% endblock %} 
+{% block main %}
+<main>
+  <!-- Личный кабинет -->
+  <div class="content_user">
+    <div class="user container">
+      <h3 class="user_room">Личный кабинет</h3>
+
+      <div class="user_block">
+        <div class="user_img">
+          <img
+            class="user_img-img"
+            src="{% static 'assets/image/goods/user.jpg' %}"
+            alt="Аватар"
+          />
+
+          <div class="user_name">
+            <p>{{ user.username }}</p>
+          </div>
+        </div>
+
+        <div class="user_info">
+          <h2 class="user_title">Личные данные</h2>
+
+          <ul class="lis__user_info">
+            <li class="list_user">
+              <p>Имя:</p>
+              <span>{{ user.first_name|default:"Не указано" }}</span>
+            </li>
+
+            <li class="list_user">
+              <p>Фамилия:</p>
+              <span>{{ user.last_name|default:"Не указано" }}</span>
+            </li>
+
+            <li class="list_user">
+              <p>Телефон:</p>
+              <span>{{ customer.phone|default:"Не указано" }}</span>
+            </li>
+
+            <li class="list_user">
+              <p>E-mail:</p>
+              <span>{{ user.email|default:"Не указано" }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <a href="{% url 'profile_edit' %}" class="btn btn_profile">
+        Редактировать
+      </a>
+    </div>
+  </div>
+
+  <!-- Мои заказы -->
+  <div class="content_order">
+    <div class="my_orders">
+      <h3>Мои заказы</h3>
+      <img
+        src="{% static 'assets/image/icons/errow_right.svg' %}"
+        alt=""
+        class="errow_down"
+      />
+    </div>
+
+    <ul class="list_orders">
+      {% for order in orders %}
+
+      <li>
+        <h4 class="order_price">Сумма заказа: {{ order.price|price_format }}</h4>
+      </li>
+
+      {% for item in order.products.all %}
+
+      <li class="order cart_profile">
+        <div class="info">
+          <a href="{% url 'product' item.slug %}">
+            {% if item.photo_url %}
+            <img
+              class="order_cart_img"
+              src="{{ item.photo_url }}"
+              alt="{{ item.title }}"
+            />
+            {% endif %}
+          </a>
+
+          <div class="info_order">
+            <h4 class="product_title">{{ item.title }}</h4>
+
+            <div class="color_quantity">
+              <div class="color">
+                <p>Цена:</p>
+                <span>{{ item.price|price_format }} сум</span>
+              </div>
+
+              <div class="quantity">
+                <p>Кол-во:</p>
+                <span>{{ item.quantity }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="data_add">
+          <p class="product_data">Дата добавления</p>
+
+          <div class="data">
+            <img
+              src="{% static 'assets/image/icons/clarity_date-line.svg' %}"
+              alt=""
+            />
+
+            <span> {{ order.created_at|date:"d E Y г. H:i" }} </span>
+          </div>
+        </div>
+
+        <div class="price_cart">
+          <p class="product_price_title">На сумму</p>
+
+          <p class="product_price">{{ item.total_price|price_format }} сум</p>
+        </div>
+      </li>
+
+      {% endfor %}
+
+      <hr />
+
+      {% empty %}
+
+      <li>
+        <p>У вас пока нет заказов</p>
+      </li>
+
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Социальные сети -->
+  <div class="content_connect">
+    <p class="content_top_text">Привязка к аккаунтам соцсетей</p>
+
+    <p class="content_midle_text">
+      Вы можете связать свой профиль с профилями в социальных сетях и сервисах:
+    </p>
+
+    <div class="list_mail">
+      <img src="{% static 'assets/image/icons/tg.svg' %}" alt="Telegram" />
+
+      <img src="{% static 'assets/image/icons/insta.svg' %}" alt="Instagram" />
+
+      <img src="{% static 'assets/image/icons/fb.svg' %}" alt="Facebook" />
+
+      <img src="{% static 'assets/image/icons/google.svg' %}" alt="Google" />
+    </div>
+  </div>
+</main>
+{% endblock %}

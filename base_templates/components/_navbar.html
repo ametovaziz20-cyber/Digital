@@ -1,0 +1,30 @@
+{% load static %}
+<nav>
+  <div class="nav_menu_icon container">
+    <div class="nav__top">
+      <a href="{% url 'index' %}" class="logo"><img src="{% static 'assets/image/logo/logo store 2.svg' %}" alt="Digitalstore"></a>
+      <form action="{% url 'search' %}" method="get">
+        <label for="s" class="label_search">
+          <input id="s" type="search" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Поиск по товарам" class="serch_in">
+          <button type="submit"><img class="icon_serch" src="{% static 'assets/image/icons/Vector.svg' %}" alt="Поиск"></button>
+        </label>
+      </form>
+      <div class="nav_icon"><ul class="icon">
+        <li><a href="{% url 'favorites' %}" class="click_icon" aria-label="Избранное"><img src="{% static 'assets/image/icon_header/Group 524.svg' %}" alt="Избранное"></a></li>
+        <li><a href="{% url 'cart' %}" class="click_icon" aria-label="Корзина"><img src="{% static 'assets/image/icon_header/bi_cart3 (1).svg' %}" alt="Корзина"></a></li>
+        <li><a href="{% url 'profile' %}" class="click_icon" aria-label="Личный кабинет"><img src="{% static 'assets/image/icon_header/Group 522 (1).svg' %}" alt="Профиль"></a></li>
+        <li class="dropdown">
+          <a href="{% url 'index' %}" class="category_burger" aria-label="Каталог"><img src="{% static 'assets/image/icons/burger.svg' %}" alt="Каталог"></a>
+          <div class="dropdown-content"><ul class="list_burger">
+            {% for category in categories %}
+              <li class="burger_list"><a href="{{ category.get_absolute_url }}">
+                {% if category.icon %}<img src="{{ category.icon.url }}" alt="">{% endif %}
+                <span class="burger_text">{{ category.title }}</span>
+              </a></li>
+            {% empty %}<li class="burger_list">Категорий пока нет</li>{% endfor %}
+          </ul></div>
+        </li>
+      </ul></div>
+    </div>
+  </div>
+</nav>

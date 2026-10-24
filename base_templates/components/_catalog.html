@@ -1,0 +1,16 @@
+{% load static %}
+<div class="header_nav_menu"><div class="container"><div class="nav__menu">
+  <ul class="nav__category">
+    <li class="dropdown"><a href="{% url 'index' %}" class="category_burger">
+      <img src="{% static 'assets/image/icons/burger.svg' %}" alt=""><p class="cat_text">Каталог</p>
+    </a><div class="dropdown-content">
+      {% for category in categories %}<a href="{{ category.get_absolute_url }}">{{ category.title }}</a>{% endfor %}
+    </div></li>
+    {% for category in categories %}
+      <li><a href="{{ category.get_absolute_url }}" class="category">
+        {% if category.icon %}<img src="{{ category.icon.url }}" alt="">{% endif %}
+        <p class="cat_text">{{ category.title }}</p>
+      </a></li>
+    {% endfor %}
+  </ul>
+</div></div></div>

@@ -1,0 +1,145 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Digitalstore — Интернет-магазин электроники
+{% endblock title %}
+
+{% block main %}
+
+<main>
+    {% include 'digital/components/_banner.html' %}
+
+    <!-- Хиты продаж -->
+    <div class="content">
+        <div class="container">
+
+            <h2 class="content__title">
+                Хиты продаж
+            </h2>
+
+            <div class="content__cards">
+
+                {% for product in hits %}
+
+                    {% include 'digital/components/_product_card.html' with product=product %}
+
+                {% empty %}
+
+                    <p>Товары пока отсутствуют.</p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Новинки -->
+    <div class="content">
+        <div class="container">
+
+            <h2 class="content__title">
+                Новинки
+            </h2>
+
+            <div class="content__cards">
+
+                {% for product in new_products %}
+
+                    {% include 'digital/components/_product_card.html' with product=product %}
+
+                {% empty %}
+
+                    <p>Новинок пока нет.</p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Действующие акции -->
+    <div class="content">
+        <div class="container">
+
+            <h2 class="content__title">
+                Действующие Акции
+            </h2>
+
+            <div class="content__images">
+
+                <img
+                    src="{% static 'assets/image/advertising/Rectangle 357.png' %}"
+                    alt="Акция Digitalstore"
+                >
+
+                <img
+                    src="{% static 'assets/image/advertising/Rectangle 358.png' %}"
+                    alt="Специальное предложение"
+                >
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Информация о магазине -->
+    <div class="content">
+        <div class="container">
+
+            <div class="content_info">
+
+                <h2 class="content__title_info">
+                    Digitalstore - Интернет магазин цифровой и бытовой техники и электроники.
+                </h2>
+
+                <p class="content__description">
+                    Digitalstore – интернет магазин бытовой техники и электроники,
+                    с доставкой по городу Ташкент и всей Республике Узбекистан.
+
+                    У нас вы сможете купить товары с оптимальным соотношением
+                    цены и качества, ознакомиться с новинками, а также сравнить
+                    характеристики.
+
+                    В каждом разделе мы расположили товары таким образом,
+                    чтобы вам было проще ознакомиться с каждым из них.
+
+                    Если вы хотите ускорить процесс выбора товаров,
+                    то вы можете воспользоваться удобной функцией поиска по сайту.
+
+                    Для удобства покупателей предусмотрено несколько вариантов
+                    оплаты за покупку: наличные, пластиковая карта,
+                    оплата при получении.
+
+                    
+                </p>
+
+                <p class="content__description">
+                    Наша миссия – сделать для покупателей максимально удобным
+                    процесс выбора и покупки товаров.
+
+                    В то время как вы работаете, стремитесь построить карьеру,
+                    воспитать детей и воплотить свои мечты в реальность,
+                    помните, что мы всегда рядом с вами – мы в одном шаге,
+                    в одном клике.
+
+                    Где бы вы ни находились: на работе, дома или в кафе,
+                    выбирайте качественную бытовую технику и электронику
+                    с комфортом и по выгодным ценам в интернет-магазине
+                    Digitalstore.
+                </p>
+
+            </div>
+
+        </div>
+    </div>
+
+</main>
+
+{% endblock main %}

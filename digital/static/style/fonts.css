@@ -1,0 +1,23 @@
+@font-face {
+  font-family: 'Regul';
+  src: url(../assets/fonts/MontserratAlternates-Regular.ttf);
+} 
+@font-face {
+  font-family: 'Bold';
+  src: url(../assets/fonts/MontserratAlternates-Bold.ttf);
+} 
+
+@font-face {
+  font-family: 'Medium';
+  src: url(../assets/fonts/MontserratAlternates-Medium.ttf);
+} 
+
+@font-face {
+  font-family: 'Thin';
+  src: url(../assets/fonts/MontserratAlternates-Thin.ttf);
+} 
+
+
+
+
+

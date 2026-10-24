@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Поиск — Digitalstore{% endblock %}
+{% block main %}
+<main><div class="content"><div class="container">
+  <h1 class="content__title">Результаты поиска: {{ query }}</h1>
+  <div class="content__cards">
+    {% for product in products %}
+      {% include 'digital/components/_product_card.html' with product=product %}
+    {% empty %}<p>Ничего не найдено. Попробуйте другой запрос.</p>{% endfor %}
+  </div>
+</div></div></main>
+{% endblock %}

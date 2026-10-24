@@ -1,0 +1,124 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Регистрация — Digitalstore
+{% endblock title %}
+
+{% block main %}
+
+<main>
+    <div class="content">
+        <div class="container">
+
+            <h2 class="login_title">
+                Регистрация
+            </h2>
+
+            <div class="login_content">
+
+                <div class="login">
+                    <div class="login_form">
+
+                        <form action="{% url 'register' %}" method="post">
+                            {% csrf_token %}
+
+                            {% if form.non_field_errors %}
+                                <div class="form-errors">
+                                    {% for error in form.non_field_errors %}
+                                        <p style="color: red;">
+                                            {{ error }}
+                                        </p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div class="form-group">
+                                {{ form.username }}
+                                {% for error in form.username.errors %}
+                                    <p style="color: red;">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ form.first_name }}
+                                {% for error in form.first_name.errors %}
+                                    <p style="color: red;">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ form.last_name }}
+                                {% for error in form.last_name.errors %}
+                                    <p style="color: red;">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ form.email }}
+                                {% for error in form.email.errors %}
+                                    <p style="color: red;">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ form.password1 }}
+                                {% for error in form.password1.errors %}
+                                    <p style="color: red;">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ form.password2 }}
+                                {% for error in form.password2.errors %}
+                                    <p style="color: red;">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ form.phone_number }}
+                                {% for error in form.phone_number.errors %}
+                                    <p style="color: red;">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+
+                            <button
+                                class="btn btn-register"
+                                type="submit"
+                            >
+                                Зарегистрироваться
+                            </button>
+
+                        </form>
+
+                    </div>
+                </div>
+
+                <div class="register_info">
+
+                    <h2 class="first_visit">
+                        Уже есть аккаунт?
+                    </h2>
+
+                    <p>
+                        Если Вы уже проходили регистрацию,
+                        войдите в свой аккаунт.
+                    </p>
+
+                    <a
+                        href="{% url 'login' %}"
+                        class="btn-to_login"
+                    >
+                        Войти
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</main>
+
+{% endblock main %}

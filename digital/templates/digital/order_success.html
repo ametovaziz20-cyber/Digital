@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Заказ №{{ order.pk }} — Digitalstore{% endblock %}
+{% block main %}
+<main><div class="content"><div class="container">
+  <h1 class="checkout_title">Заказ №{{ order.pk }} успешно создан!</h1>
+  <div class="checkout_content">
+    <div class="checkout_form">
+      <h2 class="address_title">Спасибо за покупку</h2>
+      <p class="order-note">Статус: {{ order.get_status_display }}</p>
+      <p class="order-note">Получатель: {{ order.delivery.first_name }} {{ order.delivery.last_name }}</p>
+      <p class="order-note">Телефон: {{ order.delivery.phone }}</p>
+      <p class="order-note">Адрес: {{ order.delivery.region.name }}, {{ order.delivery.city.name }},
+        {{ order.delivery.street }}, дом {{ order.delivery.home }}
+        {% if order.delivery.flat %}, кв. {{ order.delivery.flat }}{% endif %}</p>
+      <div class="order_btns"><a class="btn_order" href="{% url 'orders' %}">Мои заказы</a>
+        <a class="btn_order" href="{% url 'index' %}">Продолжить покупки</a></div>
+    </div>
+    <div class="check">
+      <h2 class="address_title">Состав заказа</h2><div class="order_check_info">
+        {% for item in order.products.all %}
+          <div class="count_price"><p>{{ item.title }}</p>
+            <div class="price_count"><p class="info_count_price">{{ item.quantity }} шт × {{ item.price }} сум</p>
+              <p class="info_count_price">{{ item.total_price }} сум</p></div>
+          </div>
+        {% endfor %}
+        <div class="line_down_check"></div><h2 class="pay_title">Итого: {{ order.price }} сум</h2>
+      </div>
+    </div>
+  </div>
+</div></div></main>
+{% endblock %}

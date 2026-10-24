@@ -1,0 +1,315 @@
+
+{% extends 'base.html' %}
+{% load static price_filters %}
+
+{% block title %}Корзина — Digitalstore{% endblock %}
+
+{% block main %}
+
+<main>
+  <div class="content">
+    <div class="container">
+
+      <!-- Заголовок корзины -->
+      <div class="my_card_orders">
+        <h1>Моя Корзина</h1>
+      </div>
+
+      <!-- Общая информация -->
+      <div class="total_products_price">
+
+        <p class="total_products_cart">
+          <span>Общее количество: </span>
+          {{ cart.quantity_products }}
+        </p>
+
+        <p class="total_price_cart">
+          <span>Общая стоимость: </span>
+          {{ cart.basket_price|price_format }} сум
+        </p>
+
+      </div>
+
+      <!-- Список товаров -->
+      <ul class="list_card_orders">
+
+        {% for item in cart_items %}
+
+          <li class="order order_cart">
+
+            <!-- Информация о товаре -->
+            <div class="info">
+
+              <a href="{{ item.product.get_absolute_url }}">
+
+                {% if item.color and item.color.image %}
+
+                  <img
+                    class="order_cart_img"
+                    src="{{ item.color.image.url }}"
+                    alt="{{ item.product.title }} — {{ item.color.name }}"
+                  >
+
+                {% else %}
+
+                  {% with photo=item.product.images.first %}
+
+                    {% if photo %}
+
+                      <img
+                        class="order_cart_img"
+                        src="{{ photo.photo.url }}"
+                        alt="{{ item.product.title }}"
+                      >
+
+                    {% else %}
+
+                      <img
+                        class="order_cart_img"
+                        src="{% static 'assets/image/goods/Redmi.png' %}"
+                        alt="{{ item.product.title }}"
+                      >
+
+                    {% endif %}
+
+                  {% endwith %}
+
+                {% endif %}
+
+              </a>
+
+              <!-- Название, цвет и количество -->
+              <div class="info_order">
+
+                <h4 class="product_title">
+                  <a href="{{ item.product.get_absolute_url }}">
+                    {{ item.product.title }}
+                  </a>
+                </h4>
+
+                <div class="color_quantity">
+
+                  <!-- Цвет товара -->
+                  {% if item.color %}
+
+                    <div class="color">
+                      <p>Цвет:</p>
+
+                      <span
+                        class="cart-color-circle"
+                        style="background-color: {{ item.color.hex_color }};"
+                      ></span>
+
+                      <span class="cart-color-name">
+                        {{ item.color.name }}
+                      </span>
+                    </div>
+
+                  {% endif %}
+
+                  <!-- Количество -->
+                  <div class="quantity">
+
+                    <p>Кол-во:</p>
+
+                    <span>{{ item.quantity }}</span>
+
+                    <div class="quantity_arrow">
+
+                      <!-- Увеличить -->
+                      <form
+                        action="{% url 'change_cart_quantity' item.pk %}"
+                        method="post"
+                      >
+                        {% csrf_token %}
+
+                        <input
+                          type="hidden"
+                          name="action"
+                          value="increase"
+                        >
+
+                        <button
+                          class="quantity-btn"
+                          type="submit"
+                          aria-label="Увеличить количество"
+                        >
+                          <img
+                            class="chg-quantity"
+                            src="{% static 'assets/image/icons/arrow-up.png' %}"
+                            alt="+"
+                          >
+                        </button>
+
+                      </form>
+
+                      <!-- Уменьшить -->
+                      <form
+                        action="{% url 'change_cart_quantity' item.pk %}"
+                        method="post"
+                      >
+                        {% csrf_token %}
+
+                        <input
+                          type="hidden"
+                          name="action"
+                          value="decrease"
+                        >
+
+                        <button
+                          class="quantity-btn"
+                          type="submit"
+                          aria-label="Уменьшить количество"
+                        >
+                          <img
+                            class="chg-quantity"
+                            src="{% static 'assets/image/icons/arrow-down.png' %}"
+                            alt="-"
+                          >
+                        </button>
+
+                      </form>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <!-- Удалить товар -->
+                <form
+                  action="{% url 'change_cart_quantity' item.pk %}"
+                  method="post"
+                  class="remove-item"
+                >
+                  {% csrf_token %}
+
+                  <input
+                    type="hidden"
+                    name="action"
+                    value="remove"
+                  >
+
+                  <button type="submit">
+                    Удалить
+                  </button>
+
+                </form>
+
+              </div>
+
+            </div>
+
+            <!-- Стоимость одной штуки -->
+            <div class="price_cart">
+
+              <p class="product_price_title">
+                Стоимость
+              </p>
+
+              <p class="product_price">
+                {{ item.product.get_price|price_format }} сум
+              </p>
+
+            </div>
+
+            <!-- Дата добавления -->
+            <div class="data_add">
+
+              <p class="product_data">
+                Дата добавления
+              </p>
+
+              <div class="data">
+
+                <img
+                  src="{% static 'assets/image/icons/clarity_date-line.svg' %}"
+                  alt=""
+                >
+
+                <span>
+                  {{ item.added_at|date:"d.m.Y" }}
+                </span>
+
+              </div>
+
+            </div>
+
+            <!-- Общая стоимость позиции -->
+            <div class="price_cart">
+
+              <p class="product_price_title">
+                Итого
+              </p>
+
+              <p class="product_price">
+                {{ item.get_total_price|price_format }} сум
+              </p>
+
+            </div>
+
+          </li>
+
+        {% empty %}
+
+          <!-- Пустая корзина -->
+          <li class="order order_cart">
+
+            <div class="cart_empty">
+
+              <h3>Ваша корзина пуста</h3>
+
+              <p>
+                Добавьте товары из каталога, чтобы оформить заказ.
+              </p>
+
+              <a href="{% url 'index' %}" class="btn_order">
+                Перейти к покупкам
+              </a>
+
+            </div>
+
+          </li>
+
+        {% endfor %}
+
+      </ul>
+
+      <!-- Кнопки оформления -->
+      {% if cart_items %}
+
+        <div class="order_btns">
+
+          <!-- Очистить корзину -->
+          <form
+            action="{% url 'clear_cart' %}"
+            method="post"
+          >
+            {% csrf_token %}
+
+            <button
+              class="btn_order"
+              type="submit"
+            >
+              Очистить корзину
+            </button>
+
+          </form>
+
+          <!-- Оформить заказ -->
+          <a
+            href="{% url 'checkout' %}"
+            class="btn_order"
+          >
+            Оформить заказ
+          </a>
+
+        </div>
+
+      {% endif %}
+
+    </div>
+  </div>
+</main>
+
+{% endblock %}

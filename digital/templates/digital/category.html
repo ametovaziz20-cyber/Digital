@@ -1,0 +1,176 @@
+
+{% extends 'base.html' %}
+{% load static price_filters %}
+
+{% block title %}{{ category.title }} — Digitalstore{% endblock %}
+
+{% block main %}
+<main>
+
+  <!-- Название категории и фильтры -->
+  <div class="content">
+    <div class="container">
+
+      <h2 class="content__title">{{ category.title }}</h2>
+
+      <div class="list_filter">
+        <form method="get" id="catalog-filter-form">
+
+          <div class="list_label">
+
+            <!-- Бренд -->
+            <details class="brand">
+              <summary class="cat_name">
+                <span>Бренд{% if selected_brand %}: {{ selected_brand }}{% endif %}</span>
+                <img src="{% static 'assets/image/icons/errow_down.svg' %}" alt="">
+              </summary>
+
+              <ul class="list_cat">
+
+                <li>
+                  <label class="category">
+                    <input type="radio" name="brand" value="" {% if not selected_brand %}checked{% endif %} onchange="this.form.submit()">
+                    Все бренды
+                  </label>
+                </li>
+
+                {% for brand in brands %}
+                <li>
+                  <label class="category">
+                    <input type="radio" name="brand" value="{{ brand }}" {% if selected_brand == brand %}checked{% endif %} onchange="this.form.submit()">
+                    {{ brand }}
+                  </label>
+                </li>
+                {% endfor %}
+
+              </ul>
+            </details>
+
+
+            <!-- Цена от -->
+            <details class="brand brand2">
+              <summary class="cat_name">
+                <span>Цена от{% if price_from %}: {{ price_from }}{% endif %}</span>
+                <img src="{% static 'assets/image/icons/errow_down.svg' %}" alt="">
+              </summary>
+
+              <ul class="list_cat">
+                <li>
+                  <input
+                    type="number"
+                    name="price_from"
+                    min="0"
+                    step="1"
+                    value="{{ price_from }}"
+                    placeholder="От, сум"
+                    class="filter_input"
+                  >
+                </li>
+
+                <li>
+                  <button type="submit" class="category filter_apply">
+                    Применить
+                  </button>
+                </li>
+              </ul>
+            </details>
+
+            <!-- Цена до -->
+            <details class="brand brand3">
+              <summary class="cat_name">
+                <span>Цена до{% if price_till %}: {{ price_till }}{% endif %}</span>
+                <img src="{% static 'assets/image/icons/errow_down.svg' %}" alt="">
+              </summary>
+
+              <ul class="list_cat">
+                <li>
+                  <input
+                    type="number"
+                    name="price_till"
+                    min="0"
+                    step="1"
+                    value="{{ price_till }}"
+                    placeholder="До, сум"
+                    class="filter_input"
+                  >
+                </li>
+
+                <li>
+                  <button type="submit" class="category filter_apply">
+                    Применить
+                  </button>
+                </li>
+              </ul>
+            </details>
+
+            <!-- Сброс фильтров -->
+            <a href="{{ request.path }}" class="filter_reset">
+              Сбросить
+            </a>
+
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Список товаров -->
+  <div class="content">
+    <div class="container">
+
+      <div class="content__cards list_cards">
+
+        {% for product in products %}
+          {% include 'digital/components/_product_card.html' with product=product %}
+        {% empty %}
+          <div class="catalog_empty">
+            <p>По выбранным параметрам товары не найдены.</p>
+            <a href="{{ request.path }}">Сбросить фильтры</a>
+          </div>
+        {% endfor %}
+
+      </div>
+
+      <!-- Пагинация -->
+      {% if page_obj.paginator.num_pages > 1 %}
+
+      <div class="pagination">
+        <div class="list_pag">
+
+          <!-- Назад -->
+          {% if page_obj.has_previous %}
+            <a href="{% querystring page=page_obj.previous_page_number %}" class="next_last" aria-label="Предыдущая страница">
+              <img src="{% static 'assets/image/icons/strelka_levo.svg' %}" alt="">
+            </a>
+          {% endif %}
+
+          <!-- Номера страниц -->
+          {% for number in page_obj.paginator.page_range %}
+
+            {% if page_obj.number == number %}
+              <span class="pag active" aria-current="page">{{ number }}</span>
+            {% else %}
+              <a href="{% querystring page=number %}" class="pag">{{ number }}</a>
+            {% endif %}
+
+          {% endfor %}
+
+          <!-- Вперёд -->
+          {% if page_obj.has_next %}
+            <a href="{% querystring page=page_obj.next_page_number %}" class="next_last" aria-label="Следующая страница">
+              <img src="{% static 'assets/image/icons/strelka_pravo.svg' %}" alt="">
+            </a>
+          {% endif %}
+
+        </div>
+      </div>
+
+      {% endif %}
+
+    </div>
+  </div>
+
+</main>
+{% endblock %}

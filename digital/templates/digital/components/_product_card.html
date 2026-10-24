@@ -1,0 +1,131 @@
+
+{% load static price_filters %}
+
+<div class="card">
+
+  {% if product.discount > 0 %}
+    <p class="product_discount">
+      <img
+        src="{% static 'assets/image/icons/discount.svg' %}"
+        alt="Скидка"
+      >
+    </p>
+  {% endif %}
+
+  <a href="{{ product.get_absolute_url }}">
+
+    <div class="card_img">
+      {% with photo=product.images.first %}
+        {% if photo %}
+          <img
+            src="{{ photo.photo.url }}"
+            alt="{{ product.title }}"
+            class="image_good"
+          >
+        {% else %}
+          <img
+            src="{% static 'assets/image/goods/Rectangle 356 (2).png' %}"
+            alt="{{ product.title }}"
+            class="image_good"
+          >
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    <p class="card_title">
+      {{ product.title }}
+    </p>
+
+    <div class="card_price">
+      <p class="price">
+        {{ product.get_price|price_format }} сум
+
+        {% if product.discount > 0 %}
+          <span class="old_price price">
+            {{ product.price|price_format }} сум
+          </span>
+        {% endif %}
+      </p>
+    </div>
+
+  </a>
+
+  <div class="card_button">
+
+    <!-- Добавление в корзину -->
+    {% if product.quantity > 0 %}
+
+      {% if user.is_authenticated %}
+        <form action="{% url 'add_to_cart' product.id %}" method="post">
+          {% csrf_token %}
+
+          <button class="btn_card" type="submit">
+            <img src="{% static 'assets/image/icons/cage.svg' %}" alt="">
+            <span class="btn_text">В корзину</span>
+          </button>
+        </form>
+      {% else %}
+        <a href="{% url 'login' %}" class="btn_card">
+          <img src="{% static 'assets/image/icons/cage.svg' %}" alt="">
+          <span class="btn_text">В корзину</span>
+        </a>
+      {% endif %}
+
+    {% else %}
+
+      <span class="btn_card">Нет в наличии</span>
+
+    {% endif %}
+
+    <!-- Избранное -->
+    {% if user.is_authenticated %}
+
+      <form action="{% url 'toggle_favorite' product.id %}" method="post">
+        {% csrf_token %}
+
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+        <button
+          type="submit"
+          class="link_fav {% if product.id|in_favorites:favorite_ids %}is-favorite{% endif %}"
+        >
+          
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              fill="none"
+            />
+          </svg>
+
+        </button>
+      </form>
+
+    {% else %}
+
+      <a
+        href="{% url 'login' %}"
+        class="link_fav"
+        aria-label="В избранное"
+      >
+        <img
+          src="{% static 'assets/image/icons/fav.svg' %}"
+          width="27"
+          alt="Избранное"
+        >
+      </a>
+
+    {% endif %}
+
+  </div>
+
+</div>

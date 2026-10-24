@@ -1,0 +1,108 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Редактирование профиля — Digitalstore
+{% endblock %}
+
+{% block main %}
+
+<main>
+  <div class="content_user">
+    <div class="user container">
+
+      <h3 class="user_room">
+        Редактирование профиля
+      </h3>
+
+      <div class="user_block">
+
+        <div class="user_img">
+          <img
+            class="user_img-img"
+            src="{% static 'assets/image/goods/user.jpg' %}"
+            alt="Аватар"
+          >
+
+          <div class="user_name">
+            <p>{{ user.username }}</p>
+          </div>
+        </div>
+
+        <div class="user_info">
+
+          <h2 class="user_title">
+            Личные данные
+          </h2>
+
+          <form method="post" class="profile_form">
+            {% csrf_token %}
+
+            {{ form.non_field_errors }}
+
+            <div class="form-group">
+              <label for="{{ form.first_name.id_for_label }}">
+                Имя
+              </label>
+
+              {{ form.first_name }}
+              {{ form.first_name.errors }}
+            </div>
+
+            <div class="form-group">
+              <label for="{{ form.last_name.id_for_label }}">
+                Фамилия
+              </label>
+
+              {{ form.last_name }}
+              {{ form.last_name.errors }}
+            </div>
+
+            <div class="form-group">
+              <label for="{{ form.phone.id_for_label }}">
+                Телефон
+              </label>
+
+              {{ form.phone }}
+              {{ form.phone.errors }}
+            </div>
+
+            <div class="form-group">
+              <label for="{{ form.email.id_for_label }}">
+                Электронная почта
+              </label>
+
+              {{ form.email }}
+              {{ form.email.errors }}
+            </div>
+
+            <div class="profile_actions">
+
+              <button
+                type="submit"
+                class="btn btn_profile"
+              >
+                Сохранить
+              </button>
+
+              <a
+                href="{% url 'profile' %}"
+                class="btn btn_profile"
+              >
+                Отмена
+              </a>
+
+            </div>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</main>
+
+{% endblock %}

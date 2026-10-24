@@ -1,0 +1,16 @@
+<div class="nav__header"><div class="container"><div class="nav_info">
+  <div class="nav_left">
+    <div class="languege"><select aria-label="Язык" class="filter_lang"><option>Ру</option></select></div>
+    <div class="city"><select aria-label="Город" class="filter_city"><option>Ташкент</option><option>Самарканд</option></select></div>
+  </div>
+  <div class="nav_right">
+    {% if user.is_authenticated %}
+      <a href="{% url 'profile' %}">{{ user.first_name|default:user.username }}</a>
+      <a href="{% url 'orders' %}">Мои заказы</a>
+      <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit" class="link_like">Выйти</button></form>
+    {% else %}
+      <a href="{% url 'login' %}">Вход</a>
+      <a href="{% url 'register' %}">Регистрация</a>
+    {% endif %}
+  </div>
+</div></div></div>

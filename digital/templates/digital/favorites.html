@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Избранное — Digitalstore{% endblock %}
+{% block main %}<main><div class="content"><div class="container">
+  <h1 class="content__title">Избранное</h1>
+  <div class="content__cards">
+    {% for product in products %}
+      {% include 'digital/components/_product_card.html' with product=product %}
+    {% empty %}<p>Вы ещё не добавили товары в избранное.</p>{% endfor %}
+  </div>
+</div></div></main>{% endblock %}

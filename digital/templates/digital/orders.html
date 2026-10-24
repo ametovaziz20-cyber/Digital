@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Мои заказы — Digitalstore{% endblock %}
+{% block main %}
+<main><div class="content"><div class="container">
+  <h1 class="content__title">Мои заказы</h1>
+  {% for order in orders %}
+    <div class="order-history">
+      <h3>Заказ №{{ order.pk }} — {{ order.price }} сум</h3>
+      <p>Дата: {{ order.created_at|date:'d.m.Y H:i' }} · Статус: {{ order.get_status_display }}</p>
+      <ul>{% for item in order.products.all %}
+        <li>{{ item.title }} — {{ item.quantity }} шт × {{ item.price }} сум</li>
+      {% endfor %}</ul>
+      <a href="{% url 'order_success' order.pk %}">Детали заказа</a>
+    </div>
+  {% empty %}
+    <p>У Вас пока нет заказов. <a href="{% url 'index' %}">Перейти в каталог</a></p>
+  {% endfor %}
+</div></div></main>
+{% endblock %}

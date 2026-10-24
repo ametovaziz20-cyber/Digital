@@ -1,0 +1,371 @@
+
+{% extends 'base.html' %}
+{% load static price_filters %}
+
+{% block title %}{{ product.title }} — Digitalstore{% endblock %}
+
+{% block main %}
+<main>
+  <div class="content">
+    <div class="container">
+
+      <!-- Карточка товара -->
+      <div class="detail_product">
+
+        <!-- Галерея -->
+        <div class="product_img">
+
+          <div class="product-main-image">
+            <img
+              id="main-product-image"
+              class="product_img-img"
+              src="{% if initial_images %}{{ initial_images.0 }}{% else %}{% static 'assets/image/goods/Rectangle 356 (2).png' %}{% endif %}"
+              alt="{{ product.title }}"
+            >
+          </div>
+
+          <div class="product-thumbnails" id="product-thumbnails">
+            {% for image_url in initial_images %}
+              <button
+                type="button"
+                class="product-thumb {% if forloop.first %}active{% endif %}"
+                data-image="{{ image_url }}"
+                aria-label="Фотография {{ forloop.counter }}"
+                aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+              >
+                <img src="{{ image_url }}" alt="{{ product.title }}">
+              </button>
+            {% endfor %}
+          </div>
+
+        </div>
+
+        <!-- Информация о товаре -->
+        <div class="product_info">
+
+          <h2 class="title__product">{{ product.title }}</h2>
+
+          <div class="price_color">
+
+            <div class="price_product">
+              <p>Цена:</p>
+
+              <h3>{{ product.get_price|price_format }} сум</h3>
+
+              {% if product.discount > 0 %}
+                <p class="old_price">
+                  <del>{{ product.price|price_format }} сум</del>
+                </p>
+              {% endif %}
+            </div>
+
+            <!-- Цвета товара -->
+            {% if colors %}
+              <div class="color_product">
+
+                <p>
+                  Цвет:
+                  <span id="selected-color-name">{{ colors.0.name }}</span>
+                </p>
+
+                <div class="box_color">
+                  {% for color in colors %}
+                    <button
+                      type="button"
+                      class="color_squer {% if forloop.first %}active{% endif %}"
+                      data-color-id="{{ color.id }}"
+                      data-color-name="{{ color.name }}"
+                      style="background-color: {{ color.hex_color }};"
+                      title="{{ color.name }}"
+                      aria-label="Выбрать цвет {{ color.name }}"
+                      aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+                    ></button>
+                  {% endfor %}
+                </div>
+
+              </div>
+            {% endif %}
+
+          </div>
+
+          <!-- Кнопки -->
+          <div class="list_button">
+
+            {% if product.quantity > 0 %}
+
+              {% if user.is_authenticated %}
+                <form
+                  action="{% url 'add_to_cart' product.id %}"
+                  method="post"
+                >
+                  {% csrf_token %}
+
+                  {% if colors %}
+                    <input
+                      type="hidden"
+                      name="color_id"
+                      id="selected-color-id"
+                      value="{{ colors.0.id }}"
+                    >
+                  {% endif %}
+
+                  <button type="submit" class="btn btn_cage1">
+                    <img
+                      src="{% static 'assets/image/icons/cage.svg' %}"
+                      alt=""
+                    >
+                    <span>В корзину</span>
+                  </button>
+                </form>
+              {% else %}
+                <a href="{% url 'login' %}" class="btn btn_cage1">
+                  <img src="{% static 'assets/image/icons/cage.svg' %}" alt="">
+                  <span>В корзину</span>
+                </a>
+              {% endif %}
+
+            {% else %}
+              <button type="button" class="btn btn_cage1" disabled>
+                <span>Нет в наличии</span>
+              </button>
+            {% endif %}
+
+            <!-- Избранное -->
+            {% if user.is_authenticated %}
+              <form
+                action="{% url 'toggle_favorite' product.id %}"
+                method="post"
+              >
+                {% csrf_token %}
+
+                <input
+                  type="hidden"
+                  name="next"
+                  value="{{ request.get_full_path }}"
+                >
+
+                <button type="submit" class="btn btn_cage2">
+                  <span>
+                    {% if is_favorite %}
+                      Убрать из избранного
+                    {% else %}
+                      В избранное
+                    {% endif %}
+                  </span>
+                </button>
+              </form>
+            {% else %}
+              <a href="{% url 'login' %}" class="btn btn_cage2">
+                <span>В избранное</span>
+              </a>
+            {% endif %}
+
+          </div>
+
+          <p class="product-stock">
+            {% if product.quantity > 0 %}
+              <span class="stock-available">
+                В наличии: {{ product.quantity }} шт.
+              </span>
+            {% else %}
+              <span class="stock-unavailable">
+                Нет в наличии
+              </span>
+            {% endif %}
+          </p>
+
+        </div>
+      </div>
+
+      <!-- Характеристики -->
+      <div class="product_detail_info">
+
+          <div>
+            <h3 class="list_left">Описание</h3>
+            <p class="list_right">{{ product.descr }}</p>
+          </div>
+        <h4 class="title_info">Общие характеристики:</h4>
+        <ul class="list_info">
+          {% for spec in product.product_specs.all %}
+          {% if spec.title.name != "Гарантия" %}
+          <li>
+            <p class="list_left">{{ spec.title.name }}</p>
+            <span class="list_right">{{ spec.value }}</span>
+          </li>
+          {% endif %}
+          {% empty %}
+          <
+          {% endfor %}
+        </ul>
+
+        {% for spec in product.product_specs.all %}
+          {% if spec.title.name == "Гарантия" %}
+            <h5 class="title_info warranty_title">
+              Гарантия: {{ spec.value }}
+            </h5>
+          {% endif %}
+        {% endfor %}
+
+      </div>
+
+      <!-- Похожие товары -->
+      {% if related_products %}
+        <div class="same_products">
+          <div class="content">
+            <div class="container">
+
+              <div class="same_product_text">
+                <h2 class="content__title">Похожие товары</h2>
+
+                <a
+                  href="{{ product.category.get_absolute_url }}"
+                  class="content__title"
+                >
+                  <span>Больше товаров</span>
+                  <img
+                    src="{% static 'assets/image/icons/errow_right.svg' %}"
+                    alt=""
+                  >
+                </a>
+              </div>
+
+              <div class="content__cards">
+                {% for related_product in related_products %}
+                  {% include 'digital/components/_product_card.html' with product=related_product %}
+                {% endfor %}
+              </div>
+
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+</main>
+
+<!-- Галереи цветов из Django -->
+{{ galleries|json_script:"product-color-galleries" }}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const mainImage = document.getElementById("main-product-image");
+  const thumbnailsContainer = document.getElementById("product-thumbnails");
+  const colorButtons = document.querySelectorAll(".color_squer[data-color-id]");
+  const colorName = document.getElementById("selected-color-name");
+  const colorInput = document.getElementById("selected-color-id");
+
+  const galleriesElement = document.getElementById("product-color-galleries");
+
+  const galleries = galleriesElement
+    ? JSON.parse(galleriesElement.textContent)
+    : {};
+
+  const productTitle = "{{ product.title|escapejs }}";
+  const fallbackImage = "{% static 'assets/image/goods/Rectangle 356 (2).png' %}";
+
+  function changeMainImage(url) {
+    if (mainImage) {
+      mainImage.src = url || fallbackImage;
+    }
+  }
+
+  function setActiveThumbnail(button) {
+    thumbnailsContainer.querySelectorAll(".product-thumb").forEach(function (item) {
+      item.classList.remove("active");
+      item.setAttribute("aria-pressed", "false");
+    });
+
+    button.classList.add("active");
+    button.setAttribute("aria-pressed", "true");
+  }
+
+  function renderThumbnails(images) {
+    if (!thumbnailsContainer) {
+      return;
+    }
+
+    thumbnailsContainer.innerHTML = "";
+
+    images.forEach(function (url, index) {
+      const button = document.createElement("button");
+
+      button.type = "button";
+      button.className = "product-thumb";
+
+      button.setAttribute(
+        "aria-label",
+        "Фотография " + (index + 1)
+      );
+
+      button.setAttribute(
+        "aria-pressed",
+        index === 0 ? "true" : "false"
+      );
+
+      if (index === 0) {
+        button.classList.add("active");
+      }
+
+      const image = document.createElement("img");
+      image.src = url;
+      image.alt = productTitle;
+
+      button.appendChild(image);
+
+      button.addEventListener("click", function () {
+        changeMainImage(url);
+        setActiveThumbnail(button);
+      });
+
+      thumbnailsContainer.appendChild(button);
+    });
+  }
+
+  function selectColor(button) {
+    const colorId = button.dataset.colorId;
+    const images = galleries[colorId] || [];
+
+    colorButtons.forEach(function (item) {
+      item.classList.remove("active");
+      item.setAttribute("aria-pressed", "false");
+    });
+
+    button.classList.add("active");
+    button.setAttribute("aria-pressed", "true");
+
+    if (colorName) {
+      colorName.textContent = button.dataset.colorName;
+    }
+
+    if (colorInput) {
+      colorInput.value = colorId;
+    }
+
+    changeMainImage(images.length ? images[0] : fallbackImage);
+    renderThumbnails(images);
+  }
+
+  colorButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      selectColor(button);
+    });
+  });
+
+  // Если цветов нет, миниатюры работают отдельно
+  if (colorButtons.length === 0 && thumbnailsContainer) {
+    thumbnailsContainer.querySelectorAll(".product-thumb").forEach(function (button) {
+      button.addEventListener("click", function () {
+        changeMainImage(button.dataset.image);
+        setActiveThumbnail(button);
+      });
+    });
+  }
+
+  if (colorButtons.length > 0) {
+    selectColor(colorButtons[0]);
+  }
+});
+</script>
+
+{% endblock %}
